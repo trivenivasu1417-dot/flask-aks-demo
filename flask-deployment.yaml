@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-demo
+  template:
+    metadata:
+      labels:
+        app: flask-demo
+    spec:
+      containers:
+      - name: flask-demo
+        image: myacr10691.azurecr.io/flask-demo:1.0
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-demo-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: flask-demo
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000

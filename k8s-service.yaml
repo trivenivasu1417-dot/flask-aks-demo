@@ -1,0 +1,26 @@
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: flask-demo-service
+
+spec:
+
+  type: LoadBalancer
+
+  loadBalancerIP: 20.151.109.65   # <-- use the new IP
+
+  selector:
+
+    app: flask-demo
+
+  ports:
+
+    - protocol: TCP
+
+      port: 80
+
+      targetPort: 5000
