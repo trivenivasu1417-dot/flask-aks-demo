@@ -26,7 +26,8 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - run: |
-          docker build -t myacr10691.azurecr.io/flask-demo:latest -f flask-demo/Dockerfile flask-demo/
+          cd flask-demo
+          docker build -t myacr10691.azurecr.io/flask-demo:latest .
           docker push myacr10691.azurecr.io/flask-demo:latest
 
       - name: Set AKS context
