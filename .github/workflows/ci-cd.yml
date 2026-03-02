@@ -1,71 +1,45 @@
 name: CI/CD to AKS
 
-
 on:
-
   push:
-
     branches:
-
       - main
 
-
 jobs:
-
   build-and-deploy:
-
     runs-on: ubuntu-latest
 
-
     steps:
-
+      # Checkout the code from the repository
       - name: Checkout code
-
         uses: actions/checkout@v3
 
-
+      # Login to Azure using the provided credentials
       - name: Login to Azure
-
         uses: azure/login@v1
-
         with:
-
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-
+      # Build and push Docker image to Azure Container Registry (ACR)
       - name: Build and push Docker image
-
         uses: azure/docker-login@v1
-
         with:
-
           login-server: myacr10691.azurecr.io
-
           username: ${{ secrets.ACR_USERNAME }}
-
           password: ${{ secrets.ACR_PASSWORD }}
 
-
       - run: |
-
           docker build -t myacr10691.azurecr.io/flask-demo:latest .
-
           docker push myacr10691.azurecr.io/flask-demo:latest
 
-
+      # Deploy to Azure Kubernetes Service (AKS)
       - name: Deploy to AKS
-
         uses: azure/aks-set-context@v1
-
         with:
-
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
           cluster-name: my-aks
-
           resource-group: demo-rg
 
-
+      # Update the AKS deployment image with the newly pushed Docker image
       - run: |
-
           kubectl set image deployment/flask-demo flask-demo=myacr10691.azurecr.io/flask-demo:latest
